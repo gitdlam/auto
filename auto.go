@@ -97,6 +97,57 @@ func processInput(input string) {
 				robotgo.KeyTap("enter")
 			case "[control-s]":
 				robotgo.KeyTap("s", "control")
+			case "[shift-f1]":
+				robotgo.KeyTap("f1", "shift")
+			case "[shift-f2]":
+				robotgo.KeyTap("f2", "shift")
+			case "[shift-f3]":
+				robotgo.KeyTap("f3", "shift")
+			case "[shift-f4]":
+				robotgo.KeyTap("f4", "shift")
+			case "[shift-f5]":
+				robotgo.KeyTap("f5", "shift")
+			case "[shift-f6]":
+				robotgo.KeyTap("f6", "shift")
+			case "[shift-f7]":
+				robotgo.KeyTap("f7", "shift")
+			case "[shift-f8]":
+				robotgo.KeyTap("f8", "shift")
+			case "[shift-f9]":
+				robotgo.KeyTap("f9", "shift")
+			case "[shift-f10]":
+				robotgo.KeyTap("f10", "shift")
+			case "[shift-f11]":
+				robotgo.KeyTap("f11", "shift")
+			case "[shift-f12]":
+				robotgo.KeyTap("f12", "shift")
+			case "[escape]":
+				robotgo.KeyTap("escape")
+
+			case "[alt-f1]":
+				robotgo.KeyTap("f1", "alt")
+			case "[alt-f2]":
+				robotgo.KeyTap("f2", "alt")
+			case "[alt-f3]":
+				robotgo.KeyTap("f3", "alt")
+			case "[alt-f4]":
+				robotgo.KeyTap("f4", "alt")
+			case "[alt-f5]":
+				robotgo.KeyTap("f5", "alt")
+			case "[alt-f6]":
+				robotgo.KeyTap("f6", "alt")
+			case "[alt-f7]":
+				robotgo.KeyTap("f7", "alt")
+			case "[alt-f8]":
+				robotgo.KeyTap("f8", "alt")
+			case "[alt-f9]":
+				robotgo.KeyTap("f9", "alt")
+			case "[alt-f10]":
+				robotgo.KeyTap("f10", "alt")
+			case "[alt-f11]":
+				robotgo.KeyTap("f11", "alt")
+			case "[alt-f12]":
+				robotgo.KeyTap("f12", "alt")
 
 			}
 
