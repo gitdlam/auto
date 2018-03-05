@@ -3,10 +3,12 @@ package main
 //-ldflags="-H windowsgui -linkmode external"
 import (
 	"bufio"
+	"io/ioutil"
 	"log"
+	"path/filepath"
 	//"fmt"
+	"os"
 	"strings"
-
 	"time"
 
 	"github.com/go-vgo/robotgo"
@@ -15,6 +17,9 @@ import (
 )
 
 func main() {
+	ex, _ := os.Executable()
+	exPath := filepath.Dir(ex)
+
 	var inTE, outTE *walk.TextEdit
 
 	type MyMainWindow struct {
@@ -23,7 +28,16 @@ func main() {
 
 	mw := new(MyMainWindow)
 
-	err := MainWindow{
+	text := ""
+	defaultText := `Hello [space] world [enter] 1 [tab] 2 [tab] 3 [control-s]`
+	b, err := ioutil.ReadFile(exPath + "\\auto.txt")
+	if err == nil {
+		text = string(b)
+	} else {
+		text = defaultText
+	}
+
+	err = MainWindow{
 		AssignTo: &mw.MainWindow,
 		Title:    "Automate Keystrokes",
 		MinSize:  Size{400, 300},
@@ -31,7 +45,7 @@ func main() {
 		Children: []Widget{
 			HSplitter{
 				Children: []Widget{
-					TextEdit{AssignTo: &inTE, Text: `Hello [space] world [enter] 1 [tab] 2 [tab] 3 [control-s]`},
+					TextEdit{AssignTo: &inTE, Text: text},
 					TextEdit{AssignTo: &outTE, ReadOnly: true, Text: `Please modify existing text on the left.
 
 Important to have space separating the [...] tags.`},
