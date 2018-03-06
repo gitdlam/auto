@@ -16,7 +16,12 @@ import (
 	. "github.com/lxn/walk/declarative"
 )
 
+type MyMainWindow struct {
+	*walk.MainWindow
+}
+
 var singleKeys map[string]bool
+var mw *MyMainWindow
 
 func main() {
 	ex, _ := os.Executable()
@@ -30,11 +35,7 @@ func main() {
 		singleKeys[v] = true
 	}
 
-	type MyMainWindow struct {
-		*walk.MainWindow
-	}
-
-	mw := new(MyMainWindow)
+	mw = new(MyMainWindow)
 
 	text := ""
 	defaultText := `Hello [space] world [enter] 1 [tab] 2 [tab] 3 [control-s]`
@@ -60,13 +61,19 @@ func main() {
 				Text: "Run",
 				Font: Font{Family: "Arial", PointSize: 16, Bold: true},
 				OnClicked: func() {
-					walk.MsgBox(mw, "Info", "Please click on the target window within 5 seconds after clicking OK.", walk.MsgBoxIconInformation)
+					problem := processInput(inTE.Text(), true)
 
-					time.Sleep(5 * time.Second)
-					processInput(inTE.Text())
+					if problem == "" {
+						walk.MsgBox(mw, "Info", "Please click on the target window within 5 seconds after clicking OK.", walk.MsgBoxIconInformation)
 
-					//outTE.SetText(strings.ToUpper(inTE.Text()))
-					outTE.SetText("Done.")
+						time.Sleep(5 * time.Second)
+
+						processInput(inTE.Text(), false)
+						outTE.SetText("Done.")
+					} else {
+						outTE.SetText(problem)
+					}
+
 				},
 			},
 
@@ -88,15 +95,11 @@ func main() {
 	mw.Run()
 }
 
-func processInput(input string) {
+func processInput(input string, checkOnly bool) string {
 	//title := robotgo.GetTitle()
 	//a := robotgo.GetActive()
-
 	//robotgo.SetHandle(robotgo.GetHandle())
-
 	//robotgo.ActivePID(int32(robotgo.GetPID()))
-	//fmt.Println(title)
-	//lines := strings.Split(input, "\n")
 	//robotgo.ActiveName(title)
 
 	input = strings.Replace(input, "[", " [", -1)
@@ -111,32 +114,48 @@ func processInput(input string) {
 
 			if singleKeys[key] {
 				matched = true
-				robotgo.KeyTap(key)
+				if !checkOnly {
+					robotgo.KeyTap(key)
+				}
 
 			}
 
 			if !matched && len(key) > 8 && key[:8] == "control-" && singleKeys[key[8:]] {
 				matched = true
-				robotgo.KeyTap(key[8:], "control")
+				if !checkOnly {
+					robotgo.KeyTap(key[8:], "control")
+				}
 
 			}
 
 			if !matched && len(key) > 6 && key[:6] == "shift-" && singleKeys[key[6:]] {
 				matched = true
-				robotgo.KeyTap(key[6:], "shift")
-
+				if !checkOnly {
+					robotgo.KeyTap(key[6:], "shift")
+				}
 			}
 
 			if !matched && len(key) > 4 && key[:4] == "alt-" && singleKeys[key[4:]] {
 				matched = true
-				robotgo.KeyTap(key[4:], "alt")
+				if !checkOnly {
+					robotgo.KeyTap(key[4:], "alt")
+				}
 
 			}
 
+			if !matched {
+				walk.MsgBox(mw, "Info", "Program aborted because this tag is not implemented: "+s, walk.MsgBoxIconExclamation)
+				return "Program aborted because this tag is not implemented: " + s
+			}
+
 		} else {
-			robotgo.TypeStrDelay(s, 1500)
+			if !checkOnly {
+				robotgo.TypeStrDelay(s, 1500)
+			}
 		}
 
 	}
+
+	return ""
 
 }
