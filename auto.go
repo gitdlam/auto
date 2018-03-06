@@ -46,15 +46,13 @@ func main() {
 			HSplitter{
 				Children: []Widget{
 					TextEdit{AssignTo: &inTE, Text: text},
-					TextEdit{AssignTo: &outTE, ReadOnly: true, Text: `Please modify existing text on the left.
-
-Important to have space separating the [...] tags.`},
+					TextEdit{AssignTo: &outTE, ReadOnly: true, Text: "Please replace existing text on the left if needed.\r\n\r\nAvailable special tags:\r\n[space][tab][enter][escape][control-s]\r\n[f1] to [f12]\r\n[shift-f1] to [shift-f12]\r\n[alt-f1] to [alt-f12]"},
 				},
 			},
 			PushButton{
 				Text: "Run",
 				OnClicked: func() {
-					walk.MsgBox(mw, "Info", "Please click on the target window within the next 5 seconds.", walk.MsgBoxIconInformation)
+					walk.MsgBox(mw, "Info", "Please click on the target window within 5 seconds after clicking OK.", walk.MsgBoxIconInformation)
 
 					time.Sleep(5 * time.Second)
 					processInput(inTE.Text())
@@ -83,6 +81,8 @@ func processInput(input string) {
 	//fmt.Println(title)
 	//lines := strings.Split(input, "\n")
 	//robotgo.ActiveName(title)
+	input = strings.Replace(input, "[", " [", -1)
+	input = strings.Replace(input, "]", "] ", -1)
 	scanner := bufio.NewScanner(strings.NewReader(input))
 	scanner.Split(bufio.ScanWords)
 	for scanner.Scan() {
@@ -148,6 +148,31 @@ func processInput(input string) {
 				robotgo.KeyTap("f11", "alt")
 			case "[alt-f12]":
 				robotgo.KeyTap("f12", "alt")
+
+			case "[f1]":
+				robotgo.KeyTap("f1")
+			case "[f2]":
+				robotgo.KeyTap("f2")
+			case "[f3]":
+				robotgo.KeyTap("f3")
+			case "[f4]":
+				robotgo.KeyTap("f4")
+			case "[f5]":
+				robotgo.KeyTap("f5")
+			case "[f6]":
+				robotgo.KeyTap("f6")
+			case "[f7]":
+				robotgo.KeyTap("f7")
+			case "[f8]":
+				robotgo.KeyTap("f8")
+			case "[f9]":
+				robotgo.KeyTap("f9")
+			case "[f10]":
+				robotgo.KeyTap("f10")
+			case "[f11]":
+				robotgo.KeyTap("f11")
+			case "[f12]":
+				robotgo.KeyTap("f12")
 
 			}
 
