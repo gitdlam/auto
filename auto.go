@@ -102,7 +102,7 @@ func processInput(input string, checkOnly bool) string {
 	//robotgo.SetHandle(robotgo.GetHandle())
 	//robotgo.ActivePID(int32(robotgo.GetPID()))
 	//robotgo.ActiveName(title)
-
+	badTags := ""
 	input = strings.Replace(input, "[", " [", -1)
 	input = strings.Replace(input, "]", "] ", -1)
 	scanner := bufio.NewScanner(strings.NewReader(input))
@@ -145,8 +145,8 @@ func processInput(input string, checkOnly bool) string {
 			}
 
 			if !matched {
+				badTags = badTags + s
 
-				return "Program aborted because this tag is not implemented: " + s
 			}
 
 		} else {
@@ -157,6 +157,10 @@ func processInput(input string, checkOnly bool) string {
 
 	}
 
-	return ""
+	if badTags == "" {
+		return ""
+	} else {
+		return "Program aborted due to unimplemented tag(s): " + badTags
+	}
 
 }
