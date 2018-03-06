@@ -1,0 +1,1 @@
+Hello [space] world [enter] 1 [tab] 2 [tab] 3 [control-s]
