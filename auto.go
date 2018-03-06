@@ -16,11 +16,19 @@ import (
 	. "github.com/lxn/walk/declarative"
 )
 
+var singleKeys map[string]bool
+
 func main() {
 	ex, _ := os.Executable()
 	exPath := filepath.Dir(ex)
 
 	var inTE, outTE *walk.TextEdit
+
+	singleKeys = make(map[string]bool)
+
+	for _, v := range strings.Split("a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,left,right,up,down,enter,tab,space,escape,f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f11,f12", ",") {
+		singleKeys[v] = true
+	}
 
 	type MyMainWindow struct {
 		*walk.MainWindow
@@ -45,7 +53,7 @@ func main() {
 			HSplitter{
 				Children: []Widget{
 					TextEdit{AssignTo: &inTE, Text: text, Font: Font{Family: "Arial", PointSize: 11}},
-					TextEdit{AssignTo: &outTE, ReadOnly: true, Font: Font{Family: "Arial", PointSize: 11}, Text: "Please replace existing text on the left if needed.\r\n\r\nAvailable special tags:\r\n[space][tab][enter][escape][control-s]\r\n[f1] to [f12]\r\n[shift-f1] to [shift-f12]\r\n[alt-f1] to [alt-f12]"},
+					TextEdit{AssignTo: &outTE, ReadOnly: true, Font: Font{Family: "Arial", PointSize: 11}, Text: "Please replace existing text on the left if needed.\r\n\r\nAvailable special tags:\r\n[space][tab][enter][escape][left][right][up][down]\r\n[f1] to [f12]\r\n[shift-*][alt-*][control-*] where * is an alphabet or any of the above"},
 				},
 			},
 			PushButton{
@@ -61,7 +69,15 @@ func main() {
 					outTE.SetText("Done.")
 				},
 			},
-			Label{Text: "open source software: github.com/gitdlam/auto", Font: Font{Family: "Arial", PointSize: 8}},
+
+			PushButton{
+				Text: "About",
+
+				OnClicked: func() {
+					walk.MsgBox(mw, "Info", "open source software:\r\ngithub.com/gitdlam/auto", walk.MsgBoxIconInformation)
+
+				},
+			},
 		},
 	}.Create()
 
@@ -82,6 +98,7 @@ func processInput(input string) {
 	//fmt.Println(title)
 	//lines := strings.Split(input, "\n")
 	//robotgo.ActiveName(title)
+
 	input = strings.Replace(input, "[", " [", -1)
 	input = strings.Replace(input, "]", "] ", -1)
 	scanner := bufio.NewScanner(strings.NewReader(input))
@@ -89,91 +106,30 @@ func processInput(input string) {
 	for scanner.Scan() {
 		s := scanner.Text()
 		if s[0] == byte('[') {
-			switch s {
-			case "[space]":
-				robotgo.KeyTap("space")
-			case "[tab]":
-				robotgo.KeyTap("tab")
-			case "[enter]":
-				robotgo.KeyTap("enter")
-			case "[control-s]":
-				robotgo.KeyTap("s", "control")
-			case "[shift-f1]":
-				robotgo.KeyTap("f1", "shift")
-			case "[shift-f2]":
-				robotgo.KeyTap("f2", "shift")
-			case "[shift-f3]":
-				robotgo.KeyTap("f3", "shift")
-			case "[shift-f4]":
-				robotgo.KeyTap("f4", "shift")
-			case "[shift-f5]":
-				robotgo.KeyTap("f5", "shift")
-			case "[shift-f6]":
-				robotgo.KeyTap("f6", "shift")
-			case "[shift-f7]":
-				robotgo.KeyTap("f7", "shift")
-			case "[shift-f8]":
-				robotgo.KeyTap("f8", "shift")
-			case "[shift-f9]":
-				robotgo.KeyTap("f9", "shift")
-			case "[shift-f10]":
-				robotgo.KeyTap("f10", "shift")
-			case "[shift-f11]":
-				robotgo.KeyTap("f11", "shift")
-			case "[shift-f12]":
-				robotgo.KeyTap("f12", "shift")
-			case "[escape]":
-				robotgo.KeyTap("escape")
+			matched := false
+			key := strings.Trim(s, "[]")
 
-			case "[alt-f1]":
-				robotgo.KeyTap("f1", "alt")
-			case "[alt-f2]":
-				robotgo.KeyTap("f2", "alt")
-			case "[alt-f3]":
-				robotgo.KeyTap("f3", "alt")
-			case "[alt-f4]":
-				robotgo.KeyTap("f4", "alt")
-			case "[alt-f5]":
-				robotgo.KeyTap("f5", "alt")
-			case "[alt-f6]":
-				robotgo.KeyTap("f6", "alt")
-			case "[alt-f7]":
-				robotgo.KeyTap("f7", "alt")
-			case "[alt-f8]":
-				robotgo.KeyTap("f8", "alt")
-			case "[alt-f9]":
-				robotgo.KeyTap("f9", "alt")
-			case "[alt-f10]":
-				robotgo.KeyTap("f10", "alt")
-			case "[alt-f11]":
-				robotgo.KeyTap("f11", "alt")
-			case "[alt-f12]":
-				robotgo.KeyTap("f12", "alt")
+			if singleKeys[key] {
+				matched = true
+				robotgo.KeyTap(key)
 
-			case "[f1]":
-				robotgo.KeyTap("f1")
-			case "[f2]":
-				robotgo.KeyTap("f2")
-			case "[f3]":
-				robotgo.KeyTap("f3")
-			case "[f4]":
-				robotgo.KeyTap("f4")
-			case "[f5]":
-				robotgo.KeyTap("f5")
-			case "[f6]":
-				robotgo.KeyTap("f6")
-			case "[f7]":
-				robotgo.KeyTap("f7")
-			case "[f8]":
-				robotgo.KeyTap("f8")
-			case "[f9]":
-				robotgo.KeyTap("f9")
-			case "[f10]":
-				robotgo.KeyTap("f10")
-			case "[f11]":
-				robotgo.KeyTap("f11")
-			case "[f12]":
-				robotgo.KeyTap("f12")
+			}
+
+			if !matched && len(key) > 8 && key[:8] == "control-" && singleKeys[key[8:]] {
+				matched = true
+				robotgo.KeyTap(key[8:], "control")
+
+			}
+
+			if !matched && len(key) > 6 && key[:6] == "shift-" && singleKeys[key[6:]] {
+				matched = true
+				robotgo.KeyTap(key[6:], "shift")
+
+			}
+
+			if !matched && len(key) > 4 && key[:4] == "alt-" && singleKeys[key[4:]] {
+				matched = true
+				robotgo.KeyTap(key[4:], "alt")
 
 			}
 
