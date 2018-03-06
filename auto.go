@@ -71,6 +71,7 @@ func main() {
 						processInput(inTE.Text(), false)
 						outTE.SetText("Done.")
 					} else {
+						walk.MsgBox(mw, "Info", problem, walk.MsgBoxIconExclamation)
 						outTE.SetText(problem)
 					}
 
@@ -144,7 +145,7 @@ func processInput(input string, checkOnly bool) string {
 			}
 
 			if !matched {
-				walk.MsgBox(mw, "Info", "Program aborted because this tag is not implemented: "+s, walk.MsgBoxIconExclamation)
+
 				return "Program aborted because this tag is not implemented: " + s
 			}
 
