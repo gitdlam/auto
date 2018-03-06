@@ -36,21 +36,21 @@ func main() {
 	} else {
 		text = defaultText
 	}
-
 	err = MainWindow{
 		AssignTo: &mw.MainWindow,
 		Title:    "Automate Keystrokes",
-		MinSize:  Size{400, 300},
+		MinSize:  Size{450, 400},
 		Layout:   VBox{},
 		Children: []Widget{
 			HSplitter{
 				Children: []Widget{
-					TextEdit{AssignTo: &inTE, Text: text},
-					TextEdit{AssignTo: &outTE, ReadOnly: true, Text: "Please replace existing text on the left if needed.\r\n\r\nAvailable special tags:\r\n[space][tab][enter][escape][control-s]\r\n[f1] to [f12]\r\n[shift-f1] to [shift-f12]\r\n[alt-f1] to [alt-f12]"},
+					TextEdit{AssignTo: &inTE, Text: text, Font: Font{Family: "Arial", PointSize: 11}},
+					TextEdit{AssignTo: &outTE, ReadOnly: true, Font: Font{Family: "Arial", PointSize: 11}, Text: "Please replace existing text on the left if needed.\r\n\r\nAvailable special tags:\r\n[space][tab][enter][escape][control-s]\r\n[f1] to [f12]\r\n[shift-f1] to [shift-f12]\r\n[alt-f1] to [alt-f12]"},
 				},
 			},
 			PushButton{
 				Text: "Run",
+				Font: Font{Family: "Arial", PointSize: 16, Bold: true},
 				OnClicked: func() {
 					walk.MsgBox(mw, "Info", "Please click on the target window within 5 seconds after clicking OK.", walk.MsgBoxIconInformation)
 
@@ -61,6 +61,7 @@ func main() {
 					outTE.SetText("Done.")
 				},
 			},
+			Label{Text: "open source software: github.com/gitdlam/auto", Font: Font{Family: "Arial", PointSize: 8}},
 		},
 	}.Create()
 
